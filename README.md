@@ -1,4 +1,23 @@
 # Software Sorcerers Senior Capstone
+![Team Logo](https://github.com/aldenroy/Software_Sorcerers_Capstone/blob/main/Milestone1/team_logo.png) \
+**Software Sorcerers:** *Turning logic into legend*
+
+## The Team
+- Maintainer: [Alden Roy](https://github.com/aldenroy) - [Resume](https://github.com/aldenroy/Software_Sorcerers_Capstone/blob/main/Team_Info/Resumes/alden_resume_1_10.pdf)
+- Developer: [Kaitlyn Woodard](https://github.com/Kait12woodard) - [Resume](https://github.com/aldenroy/Software_Sorcerers_Capstone/blob/main/Team_Info/Resumes/CS461KaitlynResume.pdf)
+- Developer: [Kira Morgan](https://github.com/kiraryder) - [Resume](https://github.com/aldenroy/Software_Sorcerers_Capstone/blob/main/Team_Info/Resumes/Kira_Resume.pdf)
+- Developer: [Brady Parksion](https://github.com/Scriblezz) - [Resume](https://github.com/aldenroy/Software_Sorcerers_Capstone/blob/main/Team_Info/Resumes/Brady_s_Resume.pdf)
+
+## Team Schedule
+| Day | Time | Notes |
+| --- | ---- | ----- |
+| Monday | 4:30pm - 5:30pm | Meeting with Chris |
+| Tuesday | 4:00pm - 6:00pm | Team Meeting |
+| Wednesday | | |
+| Thursday | 4:00pm - 5:00pm | Team Meeting |
+| Friday | 4:00pm - 5:00pm | Team Meeting |
+| Saturday | 1:00pm - 2:00pm | Weekend Check-in |
+| Sunday | 12:00pm | Pull Requests Due |
 
 ## About Us
 
