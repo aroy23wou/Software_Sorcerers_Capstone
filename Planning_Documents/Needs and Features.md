@@ -10,13 +10,6 @@ Needs and Features:
 
 * **Database for user accounts:** Store user preferences, subscription data, and activity history.
 
-#### **API Integration**
-
-* **Ping APIs:** Retrieve movie information from TMDb and streaming services.  
-* **Distilled information:** Display key movie details from APIs.  
-* **Use TMDb for search:** Search movies via TMDb, then query streaming services for availability when a movie is selected.  
-* **Include TMDb logo:** Display a “Powered by TMDb” logo on the search page.
-
 #### **Accessibility and User-Friendliness**
 
 * **ADA compliance:** Focus on accessibility, including Bootstrap ADA features (e.g., ARIA tags).  
@@ -41,9 +34,4 @@ Needs and Features:
 
 * **Movie recommendations:** Use ChatGPT for personalized suggestions.  
 * **Recent movies focus:** Base recommendations on the most recent movies watched.
-
-#### **Mind Map and Decisions**
-
-* **APIs to consider:** Create a mind map of all relevant APIs for integration.  
-* **IMDB vs TMDb:** Consult Chris about the choice between IMDB and TMDb.
 
