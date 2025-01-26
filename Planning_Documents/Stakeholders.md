@@ -42,7 +42,7 @@ Alan is a dedicated and passionate science teacher who lives in Boulder, Colorad
 
 Alan recently signed up for the streaming service to enjoy nature documentaries and science fiction movies during his downtime. However, he often struggles with websites that don’t consider colorblindness. Buttons and text links that rely solely on color distinctions frustrate him, as do movie ratings and charts without texture or text differentiation.
 
-![Alan](stakeholder_pics/alan.png){ width=300 }
+![Alan](stakeholder_pics/alan.png)
 **Name:** Emily "Em" Dawson  
 **Age:** 27  
 **Hometown:** Asheville, North Carolina  
@@ -55,7 +55,7 @@ Emily is empathetic and determined. She’s passionate about advocating for neur
 
 She prefers streaming services that are easy to navigate and offer audio descriptions or voice-based navigation. She looks for platforms with dyslexia-friendly fonts and high-contrast designs to reduce eye strain. She enjoys exploring curated recommendations based on her favorite themes or genres rather than reading long descriptions.
 
-![Emily](./stakeholder_pics/emily.png){ width=300 }
+![Emily](./stakeholder_pics/emily.png)
 
 ### 
 
@@ -72,4 +72,4 @@ Harold has difficulty reading small fonts and prefers larger, high-contrast text
 
 He wants to easily find and watch his favorite movies and series. He also wants to enjoy an accessible and user-friendly interface with a simple layout and minimal clutter. He could benefit from voice-activated controls or spoken summaries of movies. Harold is comfortable using a tablet but prefers straightforward apps without steep learning curves.
 
-![Harold](stakeholder_pics/harold.png){ width=300 }
+![Harold](stakeholder_pics/harold.png)
