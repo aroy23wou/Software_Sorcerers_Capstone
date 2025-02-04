@@ -1,7 +1,13 @@
+using MoviesMadeEasy.DAL.Abstract; // Add this line
+using MoviesMadeEasy.DAL.Concrete; // Add this line
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register HttpClient for MovieService
+builder.Services.AddHttpClient<IMovieService, MovieService>();
 
 var app = builder.Build();
 
