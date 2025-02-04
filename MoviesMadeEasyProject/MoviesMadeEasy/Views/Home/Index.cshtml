@@ -1,8 +1,36 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Movie Search";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>Movie Search</h2>
+
+<div>
+    <input type="text" id="searchInput" placeholder="Enter movie title..." />
+    <button onclick="searchMovies()">Search</button>
 </div>
+
+<ul id="results"></ul>
+
+<script>
+    async function searchMovies() {
+        let query = document.getElementById("searchInput").value.trim();
+        if (query === "") return;
+
+        let response = await fetch(`/Home/SearchMovies?query=${encodeURIComponent(query)}`);
+        let movies = await response.json();
+
+        let resultsList = document.getElementById("results");
+        resultsList.innerHTML = "";
+
+        if (movies.length === 0) {
+            resultsList.innerHTML = "<li>No results found.</li>";
+            return;
+        }
+
+        movies.forEach(movie => {
+            let listItem = document.createElement("li");
+            listItem.textContent = movie.title;
+            resultsList.appendChild(listItem);
+        });
+    }
+</script>
