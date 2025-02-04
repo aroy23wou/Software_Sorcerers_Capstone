@@ -8,6 +8,8 @@ builder.Services.AddControllersWithViews();
 
 // Register HttpClient for MovieService
 builder.Services.AddHttpClient<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+
 
 var app = builder.Build();
 
