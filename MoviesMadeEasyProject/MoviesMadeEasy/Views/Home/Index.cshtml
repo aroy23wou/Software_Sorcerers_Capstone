@@ -5,7 +5,7 @@
 <h2>Movie Search</h2>
 
 <div>
-    <input type="text" id="searchInput" placeholder="Enter movie title..." />
+    <input type="text" id="searchInput" placeholder="Enter movie title..." onkeypress="handleKeyPress(event)" />
     <button onclick="searchMovies()">Search</button>
 </div>
 
@@ -32,5 +32,11 @@
             listItem.textContent = movie.title;
             resultsList.appendChild(listItem);
         });
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            searchMovies();
+        }
     }
 </script>
