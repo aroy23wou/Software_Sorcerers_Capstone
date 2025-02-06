@@ -50,6 +50,7 @@ namespace MME_Tests
         [Test]
         public async Task SearchMovies_EmptyQuery_ReturnsEmptyJsonObject()
         {
+
             var query = "";
 
             var result = await _controller.SearchMovies(query) as JsonResult;
