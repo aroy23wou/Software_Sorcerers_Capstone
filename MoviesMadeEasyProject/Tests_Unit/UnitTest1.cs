@@ -1,31 +1,87 @@
 using NUnit.Framework;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
 using MoviesMadeEasy.Controllers;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc; 
+using MoviesMadeEasy.DAL.Abstract;
+using MoviesMadeEasy.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
-namespace MME_Tests;
-
-public class Tests
+namespace MME_Tests
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
     [TestFixture]
     public class HomeControllerTests
     {
-        [Test]
-        public void HomeController_Index_ReturnsViewResult()
+        private Mock<IMovieService> _mockMovieService;
+        private HomeController _controller;
+
+        [SetUp]
+        public void Setup()
         {
-            // Arrange: Create a real logger
-            ILogger<HomeController> logger = new LoggerFactory().CreateLogger<HomeController>();
+            _mockMovieService = new Mock<IMovieService>();
+            _controller = new HomeController(_mockMovieService.Object);
+        }
 
-            // Act: Create an instance of HomeController and call Index()
-            var controller = new HomeController(logger);
-            var result = controller.Index();
+        [TearDown]
+        public void TearDown()
+        {
+            _controller?.Dispose(); // Ensuring proper cleanup
+        }
 
-            // Assert: Ensure Index() returns a ViewResult (proves real interaction)
-            Assert.IsInstanceOf<ViewResult>(result);
+        [Test]
+        public async Task SearchMovies_ValidQuery_ReturnsJsonResult()
+        {
+            // Arrange
+            var query = "Inception";
+            var movies = new List<Movie> { new Movie { Title = "Inception", ReleaseYear = 2010 } };
+            _mockMovieService.Setup(s => s.SearchMoviesAsync(query)).ReturnsAsync(movies);
+
+            // Act
+            var result = await _controller.SearchMovies(query) as JsonResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<JsonResult>(result);
+            Assert.That(result.Value, Is.EqualTo(movies));
+        }
+
+        [Test]
+        public async Task SearchMovies_EmptyQuery_ReturnsEmptyJsonObject()
+        {
+            // Arrange
+            var query = "";
+
+            // Act
+            var result = await _controller.SearchMovies(query) as JsonResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<JsonResult>(result);
+
+            // Check if the result is an empty JSON object
+            var jsonResult = JObject.FromObject(result.Value);
+            Assert.IsTrue(jsonResult.Count == 0);
+        }
+
+        [Test]
+        public async Task SearchMovies_ServiceThrowsException_ReturnsEmptyJsonObject()
+        {
+            // Arrange
+            var query = "Test Movie";
+            _mockMovieService.Setup(s => s.SearchMoviesAsync(query)).ThrowsAsync(new Exception("API error"));
+
+            // Act
+            var result = await _controller.SearchMovies(query) as JsonResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<JsonResult>(result);
+
+            // Check if the result is an empty JSON object
+            var jsonResult = JObject.FromObject(result.Value);
+            Assert.IsTrue(jsonResult.Count == 0);
         }
     }
 }
