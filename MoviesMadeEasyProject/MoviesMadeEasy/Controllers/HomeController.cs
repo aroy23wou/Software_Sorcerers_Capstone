@@ -19,13 +19,23 @@ namespace MoviesMadeEasy.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchMovies(string query)
+        public async Task<JsonResult> SearchMovies(string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
-                return Json(new { });
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return Json(new { }); // Ensure consistent return type
+                }
 
-            var movies = await _movieService.SearchMoviesAsync(query);
-            return Json(movies);
+                var movies = await _movieService.SearchMoviesAsync(query);
+                return Json(movies);
+            }
+            catch (Exception)
+            {
+                return Json(new { }); // Handle errors gracefully
+            }
         }
+
     }
 }
