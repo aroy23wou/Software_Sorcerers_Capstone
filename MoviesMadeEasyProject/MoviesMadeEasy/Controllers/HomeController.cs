@@ -1,31 +1,31 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MoviesMadeEasy.Models;
+using MoviesMadeEasy.DAL.Abstract;
+using System.Threading.Tasks;
 
-namespace MoviesMadeEasy.Controllers;
-
-public class HomeController : Controller
+namespace MoviesMadeEasy.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public class HomeController : Controller
     {
-        _logger = logger;
-    }
+        private readonly IMovieService _movieService;
 
-    public IActionResult Index()
-    {
-        return View();
-    }
+        public HomeController(IMovieService movieService)
+        {
+            _movieService = movieService;
+        }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        [HttpGet]
+        public async Task<IActionResult> SearchMovies(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return Json(new { });
+
+            var movies = await _movieService.SearchMoviesAsync(query);
+            return Json(movies);
+        }
     }
 }
