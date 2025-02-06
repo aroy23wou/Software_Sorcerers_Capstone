@@ -50,17 +50,13 @@ namespace MME_Tests
         [Test]
         public async Task SearchMovies_EmptyQuery_ReturnsEmptyJsonObject()
         {
-            // Arrange
             var query = "";
 
-            // Act
             var result = await _controller.SearchMovies(query) as JsonResult;
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<JsonResult>(result);
 
-            // Check if the result is an empty JSON object
             var jsonResult = JObject.FromObject(result.Value);
             Assert.IsTrue(jsonResult.Count == 0);
         }
@@ -68,18 +64,14 @@ namespace MME_Tests
         [Test]
         public async Task SearchMovies_ServiceThrowsException_ReturnsEmptyJsonObject()
         {
-            // Arrange
             var query = "Test Movie";
             _mockMovieService.Setup(s => s.SearchMoviesAsync(query)).ThrowsAsync(new Exception("API error"));
 
-            // Act
             var result = await _controller.SearchMovies(query) as JsonResult;
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<JsonResult>(result);
 
-            // Check if the result is an empty JSON object
             var jsonResult = JObject.FromObject(result.Value);
             Assert.IsTrue(jsonResult.Count == 0);
         }
