@@ -4,15 +4,29 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoviesMadeEasy.Models;
 using MoviesMadeEasy.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 // Register HttpClient for MovieService
 builder.Services.AddHttpClient<IMovieService, MovieService>();
-builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieService, MovieService>(provider =>
+{
+    var httpClient = provider.GetRequiredService<HttpClient>();
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return new MovieService(httpClient, configuration);
+});
+
 
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
