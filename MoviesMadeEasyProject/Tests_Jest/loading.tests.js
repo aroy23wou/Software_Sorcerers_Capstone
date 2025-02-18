@@ -42,14 +42,18 @@ describe("searchMovies function", () => {
         fetch.mockResolvedValueOnce({
             json: jest.fn().mockResolvedValueOnce([])
         });
-
+    
         searchInput.value = "Inception";
+    
+        // Trigger the search and immediately check spinner visibility
         const searchPromise = searchMovies();
-
+    
+        // Check that the spinner is visible during the search
         expect(loadingSpinner.style.display).toBe("block");
-
+    
         await searchPromise;
     });
+    
 
     test("hides the loading spinner after fetching results", async () => {
         fetch.mockResolvedValueOnce({
