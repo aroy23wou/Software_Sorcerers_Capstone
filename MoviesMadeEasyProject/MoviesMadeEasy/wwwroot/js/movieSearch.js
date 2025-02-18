@@ -9,6 +9,9 @@ async function searchMovies() {
     
     // Show the spinner
     loadingSpinner.style.display = "block";
+    loadingSpinner.setAttribute("aria-live", "assertive");
+    loadingSpinner.setAttribute("aria-label", "Loading, please wait...");
+
 
     // Check if the search box is empty
     if (query === "") {
@@ -22,7 +25,11 @@ async function searchMovies() {
         let response = await fetch(`/Home/SearchMovies?query=${encodeURIComponent(query)}`);
         let movies = await response.json();
 
-        loadingSpinner.style.display = "none"; // Hide spinner when results are ready
+        // After hiding the spinner, remove the aria-live and aria-label attributes
+        loadingSpinner.style.display = "none";
+        loadingSpinner.removeAttribute('aria-live');
+        loadingSpinner.removeAttribute('aria-label');
+
 
         if (movies.length === 0) {
             resultsContainer.innerHTML = "<div class='no-results' role='alert'>No results found.</div>";
