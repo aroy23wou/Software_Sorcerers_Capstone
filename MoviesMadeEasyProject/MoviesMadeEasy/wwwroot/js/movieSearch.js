@@ -21,12 +21,14 @@ async function searchMovies() {
     }
 
     // Construct query parameters
+    //did this so I can add new stuff to help do the logic in the controller.
     let queryParams = new URLSearchParams({
         query: query,
         sortBy: sortOption
     });
 
     // Add minYear and maxYear if they are provided
+    // Again another think to help in the controller logic. Gets from dropdown
     if (minYear) queryParams.append("minYear", minYear);
     if (maxYear) queryParams.append("maxYear", maxYear);
 
