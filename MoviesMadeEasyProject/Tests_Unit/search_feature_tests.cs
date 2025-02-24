@@ -78,6 +78,8 @@ namespace MME_Tests
         }
 
         [Test]
+        // Kept these tests for sort by in this file because it's under the same controller and mock
+        // without it I get an ambiguity error. Subset of the same feature so we'll keep them here.
         public async Task SearchMovies_SortByTitleAsc_ReturnsSortedMoviesAscending()
         {
             var query = "Movie";
