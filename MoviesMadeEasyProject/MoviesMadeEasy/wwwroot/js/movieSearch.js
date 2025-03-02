@@ -2,88 +2,97 @@ async function searchMovies() {
     let searchInput = document.getElementById("searchInput");
     let query = searchInput.value.trim();
     let resultsContainer = document.getElementById("results");
+    let loadingSpinner = document.getElementById("loadingSpinner");
+
+    // Get filter and sorting values
+    let sortOption = document.getElementById("sortBy")?.value || "default";
+    let minYear = document.getElementById("minYear")?.value?.trim();
+    let maxYear = document.getElementById("maxYear")?.value?.trim();
 
     // Clear previous results
     resultsContainer.innerHTML = "";
+    loadingSpinner.style.display = "block";
 
-    // Check if the search box is empty
     if (query === "") {
         resultsContainer.innerHTML = "<div class='error-message' role='alert'>Please enter a movie title before searching.</div>";
-        searchInput.focus(); // Focus back on input for better UX
+        searchInput.focus();
+        loadingSpinner.style.display = "none";
         return;
     }
 
-    let response = await fetch(`/Home/SearchMovies?query=${encodeURIComponent(query)}`);
-    let movies = await response.json();
-
-    if (movies.length === 0) {
-        resultsContainer.innerHTML = "<div class='no-results' role='alert'>No results found.</div>";
-        return;
-    }
-    
-    // Get sort option from dropdown
-    let sortOption = document.getElementById("sortBy").value;
-
-    // Get year filter values (if any)
-    let minYearValue = document.getElementById("minYear").value.trim();
-    let maxYearValue = document.getElementById("maxYear").value.trim();
-
-    let minYear = minYearValue ? parseInt(minYearValue, 10) : null;
-    let maxYear = maxYearValue ? parseInt(maxYearValue, 10) : null;
-
-    // If one value is provided, use it to filter for that specific year.
-    if (minYear !== null && maxYear === null) {
-        maxYear = minYear;
-    } else if (maxYear !== null && minYear === null) {
-        minYear = maxYear;
-    }
-
-    // Filter movies by year range if either min or max is provided
-    let filteredMovies = movies.filter(movie => {
-        let year = movie.releaseYear || 0;
-        let valid = true;
-        if (minYear !== null) {
-            valid = valid && (year >= minYear);
-        }
-        if (maxYear !== null) {
-            valid = valid && (year <= maxYear);
-        }
-        return valid;
+    // Construct query parameters
+    //did this so I can add new stuff to help do the logic in the controller.
+    let queryParams = new URLSearchParams({
+        query: query,
+        sortBy: sortOption
     });
 
-    if (filteredMovies.length === 0) {
-        resultsContainer.innerHTML = "<div class='no-results' role='alert'>No movies match the selection.</div>";
-        return;
-    }
+    // Add minYear and maxYear if they are provided
+    // Again another think to help in the controller logic. Gets from dropdown
+    if (minYear) queryParams.append("minYear", minYear);
+    if (maxYear) queryParams.append("maxYear", maxYear);
 
-    // Sort the filtered movies
-    if (sortOption === "yearAsc") {
-        filteredMovies.sort((a, b) => (a.releaseYear || 0) - (b.releaseYear || 0));
-    } else if (sortOption === "yearDesc") {
-        filteredMovies.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
-    }
+    try {
+        let response = await fetch(`/Home/SearchMovies?${queryParams.toString()}`);
+        let movies = await response.json();
 
-    // Render movie cards from the filtered & sorted list
-    filteredMovies.forEach(movie => {
-        let movieCard = document.createElement("article");
-        movieCard.className = "movie-card";
-        movieCard.innerHTML = `
-            <div class="movie-row" aria-label="Search results card for ${movie.title}">
-                <img src="${movie.posterUrl || 'https://via.placeholder.com/150'}" class="movie-poster" alt="${movie.title} movie poster">
-                <div class="movie-details" aria-label="Movie details for ${movie.title}">
-                    <h5 aria-label="Movie title is ${movie.title}">${movie.title} <span class="movie-year">(${movie.releaseYear || 'N/A'})</span></h5>
-                    <p class="movie-genres">Genres: ${movie.genres?.join(", ") || 'Unknown'}</p>
-                    <button class="btn btn-primary" aria-label="View details for ${movie.title}">View Details</button>
-                    <button class="btn btn-outline-secondary" aria-label="Find more movies like ${movie.title}">More Like This</button>
+        loadingSpinner.style.display = "none";
+
+        if (!movies || movies.length === 0) {
+            resultsContainer.innerHTML = "<div class='no-results' role='alert'>No results found.</div>";
+            return;
+        }
+
+        resultsContainer.innerHTML = movies.map(movie => `
+            <article class="movie-card">
+                <div class="movie-row" aria-label="Search results card for ${movie.title}">
+                    <img src="${movie.posterUrl || 'https://via.placeholder.com/150'}" class="movie-poster" alt="${movie.title} movie poster">
+                    <div class="movie-details">
+                        <h5>${movie.title} <span class="movie-year">(${movie.releaseYear || 'N/A'})</span></h5>
+                        <p class="movie-genres">Genres: ${movie.genres?.join(", ") || 'Unknown'}</p>
+                        <p class="movie-rating">Rating: ${movie.rating || 'N/A'}</p>
+                        <button class="btn btn-primary">View Details</button>
+                        <button class="btn btn-outline-secondary">More Like This</button>
+                    </div>
                 </div>
-            </div>
-        `;
-        resultsContainer.appendChild(movieCard);
-    });
-}
+            </article>
+        `).join('');
 
-function handleKeyPress(event) {
-    if (event.key === "Enter") {
-        searchMovies();
+        enableFilters();
+    } catch (error) {
+        loadingSpinner.style.display = "none";
+        resultsContainer.innerHTML = "<div class='error-message' role='alert'>An error occurred while fetching movie data. Please try again later.</div>";
+        console.error("Error fetching movies:", error);
     }
 }
+
+function enableFilters() {
+    searchExecuted = true;
+    document.getElementById("sortBy").disabled = false;
+    document.getElementById("minYear").disabled = false;
+    document.getElementById("maxYear").disabled = false;
+}
+
+function handleFilterInteraction(event) {
+    if (!searchExecuted) {
+        event.preventDefault();
+        alert("Please perform a search to use filters");
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    let searchInput = document.getElementById("searchInput");
+
+    // Trigger search when Enter is pressed in the input field
+    searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent form submission (if inside a form)
+            searchMovies();
+        }
+    });
+
+    document.getElementById("sortBy").addEventListener("click", handleFilterInteraction);
+    document.getElementById("minYear").addEventListener("focus", handleFilterInteraction);
+    document.getElementById("maxYear").addEventListener("focus", handleFilterInteraction);
+});
+
+module.exports = { searchMovies };

@@ -1,0 +1,106 @@
+﻿.content {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.movie-placeholder {
+    width: 100px;
+    height: 150px;
+    background-color: #ddd;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.dashtitles {
+    margin: auto;
+    padding: 30px 10px;
+}
+
+.subscription-placeholder {
+    position: relative;
+    width: 130px; 
+    height: 130px; 
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; 
+    margin: 0 auto; 
+}
+
+#circle-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 40px;
+    margin-bottom: 60px;
+}
+
+.service-name {
+    font-size: 1.2rem; 
+    color: #333; 
+}
+
+#add-subscription-btn {
+    background-color: #333; 
+    color: #fff; 
+    font-size: 1rem; 
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    margin: 10px 10px 25px 10px;
+}
+
+#add-subscription-btn:focus, #add-subscription-btn:hover {
+    background-color: #fff; 
+    color: #000000;
+    border: dashed 2px #000000;
+}
+
+.subscription-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.subscription-item {
+    width: 160px;
+    height: 130px;
+    border-radius: 60%;
+    overflow: hidden;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid black;
+    transition: all 0.3s ease;
+}
+
+.subscription-item:hover {
+    width: 200px;
+    height: 170px;
+    box-shadow: 0 0 15px 5px rgba(0, 123, 255, 0.5);
+}
+
+.service-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: white;
+    border: none;
+}
+
+
+
+
+
