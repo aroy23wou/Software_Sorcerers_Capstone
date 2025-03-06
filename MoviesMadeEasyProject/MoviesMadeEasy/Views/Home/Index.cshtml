@@ -53,13 +53,14 @@
             </div>
             <div class="modal-body">
                 <img id="modalPoster" src="" alt="Movie Poster" class="img-fluid">
-                <p id="modalGenres"></p>
-                <p id="modalRating"></p>
+                <div class="modal-text-content">
+                    <p id="modalGenres"></p>
+                    <p id="modalRating"></p>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <!-- Load JavaScript via Partial View -->
 @await Html.PartialAsync("_MovieSearchScript")
