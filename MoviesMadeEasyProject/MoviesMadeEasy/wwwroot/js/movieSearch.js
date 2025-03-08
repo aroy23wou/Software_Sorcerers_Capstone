@@ -44,8 +44,8 @@ async function searchMovies() {
         resultsContainer.innerHTML = index.map(item => {
             // Assuming each genre is an object with a 'name' property
             let genres = item.genres && item.genres.length > 0 
-                         ? item.genres.map(genre => genre.name).join(", ") 
-                         : 'Unknown';
+                ? item.genres.join(", ") 
+                : 'Unknown';
 
             return `
                 <article class="movie-card">
