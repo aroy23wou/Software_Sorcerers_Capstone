@@ -31,7 +31,7 @@ async function searchMovies() {
     if (maxYear) queryParams.append("maxYear", maxYear);
 
     try {
-        let response = await fetch(`/Home/SearchIndex?${queryParams.toString()}`);
+        let response = await fetch(`/Home/SearchMovies?${queryParams.toString()}`);
         let index = await response.json();
 
         loadingSpinner.style.display = "none";
