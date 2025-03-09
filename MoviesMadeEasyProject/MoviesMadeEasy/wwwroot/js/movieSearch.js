@@ -79,8 +79,12 @@ async function searchMovies() {
         console.error("Error fetching index:", error);
         resultsContainer.innerHTML = "<div class='error-message' role='alert'>An error occurred while fetching data. Please try again later.</div>";
         console.error("Error fetching index:", error);
+        resultsContainer.innerHTML = "<div class='error-message' role='alert'>An error occurred while fetching data. Please try again later.</div>";
+        console.error("Error fetching index:", error);
     }
 }
+
+
 
 
 
