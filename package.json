@@ -15,8 +15,11 @@
     "@babel/preset-react": "^7.26.3",
     "@testing-library/jest-dom": "^6.6.3",
     "babel-jest": "^29.7.0",
+    "bootstrap": "^5.3.3",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "text-encoding": "^0.7.0",
+    "whatwg-fetch": "^3.6.20"
   },
   "type": "module",
   "jest": {
@@ -30,5 +33,10 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
+  },
+  "dependencies": {
+    "@testing-library/react": "^16.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

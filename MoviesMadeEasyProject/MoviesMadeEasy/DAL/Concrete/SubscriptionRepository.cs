@@ -11,8 +11,6 @@ namespace MoviesMadeEasy.DAL.Concrete
         private readonly DbSet<StreamingService> _streamingServices;
         private readonly UserDbContext _context;
 
-        public List<StreamingService> StreamingServices { get; }
-
         public SubscriptionRepository(UserDbContext context) : base(context)
         {
             _uss = context.UserStreamingServices;
@@ -20,74 +18,67 @@ namespace MoviesMadeEasy.DAL.Concrete
             _context = context;
         }
 
+        public IEnumerable<StreamingService> GetAllServices()
+        {
+            return _streamingServices.OrderBy(s => s.Name).ToList();
+        }
 
         public List<StreamingService> GetUserSubscriptions(int userId)
         {
-            // Query to get all streaming services for a specific user
-            var userSubscriptions = _uss
+            return _uss
                 .Include(us => us.StreamingService)  
                 .Where(us => us.UserId == userId)    
                 .Select(us => us.StreamingService)   
-                .ToList();                           
-
-            return userSubscriptions;
-        }
-
-        public List<StreamingService> GetAvailableStreamingServices(int userId)
-        {
-
-            var toAddSubsList = _streamingServices
-                .Include(ss => ss.UserStreamingServices)
-                .Where(ss => ss.UserStreamingServices.All(us => us.UserId != userId))
-                .OrderBy(ss => ss.Name)
                 .ToList();
-
-            return toAddSubsList;
         }
 
-        private HashSet<int> GetUserExistingSubscriptions(int userId)
+        private List<UserStreamingService> GetUserSubscriptionRecords(int userId)
         {
             return _context.UserStreamingServices
                 .Where(us => us.UserId == userId)
-                .Select(us => us.StreamingServiceId)
-                .ToHashSet();
+                .ToList();
         }
 
-        public void AddUserSubscriptions(int userId, List<int> selectedServiceIds)
+        private void RemoveUnselectedSubscriptions(int userId, List<int> selectedServiceIds)
         {
-            try
+            var currentSubscriptions = GetUserSubscriptionRecords(userId);
+            var subscriptionsToRemove = currentSubscriptions
+                .Where(us => !selectedServiceIds.Contains(us.StreamingServiceId))
+                .ToList();
+
+            if (subscriptionsToRemove.Any())
             {
-                var userExists = _context.Users.Any(u => u.Id == userId);
-                if (!userExists)
-                {
-                    throw new InvalidOperationException("User does not exist.");
-                }
-                if (selectedServiceIds == null || !selectedServiceIds.Any())
-                {
-                    return;
-                }
-
-                var existingSubscriptions = GetUserExistingSubscriptions(userId);
-
-                var newSubscriptions = selectedServiceIds
-                    .Where(id => !existingSubscriptions.Contains(id))
-                    .Select(id => new UserStreamingService
-                    {
-                        UserId = userId,
-                        StreamingServiceId = id
-                    })
-                    .ToList();
-
-                if (newSubscriptions.Any())
-                {
-                    _uss.AddRange(newSubscriptions);
-                    _context.SaveChanges();
-                }
+                _uss.RemoveRange(subscriptionsToRemove);
             }
-            catch (Exception ex)
+        }
+
+        private void AddNewSubscriptions(int userId, List<int> selectedServiceIds)
+        {
+            var currentSubscriptions = GetUserSubscriptionRecords(userId);
+            var currentSubscriptionIds = currentSubscriptions
+                .Select(us => us.StreamingServiceId)
+                .ToHashSet();
+
+            var subscriptionsToAdd = selectedServiceIds
+                .Where(id => !currentSubscriptionIds.Contains(id))
+                .Select(id => new UserStreamingService
+                {
+                    UserId = userId,
+                    StreamingServiceId = id
+                })
+                .ToList();
+
+            if (subscriptionsToAdd.Any())
             {
-                throw;
+                _uss.AddRange(subscriptionsToAdd);
             }
+        }
+
+        public void UpdateUserSubscriptions(int userId, List<int> selectedServiceIds)
+        {
+            RemoveUnselectedSubscriptions(userId, selectedServiceIds);
+            AddNewSubscriptions(userId, selectedServiceIds);
+            _context.SaveChanges();
         }
 
     }

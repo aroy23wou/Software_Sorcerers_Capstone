@@ -1,0 +1,53 @@
+﻿@model MoviesMadeEasy.DTOs.DashboardDTO
+
+@{ 
+    ViewData["Title"] = "Available Subscriptions";
+}
+
+<link rel="stylesheet" href="~/css/subscriptionForm.css" />
+
+<h1 class="text-center my-4">Manage Subscription Services</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["Message"]
+    </div>
+}
+
+<p id="manageDescription">
+    Welcome to Managing Your Streaming Services. Our Software Sorcers have worked their magic to
+    preselect your current streaming services. Please review and update your selections so we can record your 
+    subscription services in our enchanted spell book—ensuring our magic boxes effortlessly guide you to the shows you seek.
+    <span class="disclaimer">Disclaimer: Unsubscribing here will not cancel your actual service subscriptions.</span>
+</p>
+
+
+<form id="subscriptionForm" method="post" action="/User/SaveSubscriptions">
+    <input type="hidden" asp-for="UserId" />
+    
+    <input type="hidden" id="preSelectedServices" value="@Model.PreSelectedServiceIds" />
+
+    <div class="subscription-container">
+        @foreach (var service in Model.AllServicesList)
+        {
+            <div class="card" data-id="@service.Id" tabindex="0" aria-checked="false">
+                <img class="card-img-top" src="@service.LogoUrl" alt="@service.Name logo" />
+                <div class="card-body text-center">
+                    <p class="card-text">@service.Name</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <input type="hidden" name="selectedServices" id="selectedServices" />
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn-action">Save Selection</button>
+        <a href="@Url.Action("Cancel", "User")" class="btn-action">Cancel</a>
+    </div>
+</form>
+
+<script src="~/js/manageStreamingService.js"></script>
+
+<!-- Credit: Bootstrap Cards - https://getbootstrap.com/docs/4.0/components/card/ -->

@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using MoviesMadeEasy.DTOs;
 using MoviesMadeEasy.DAL.Abstract;
+using MoviesMadeEasy.Data;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MoviesMadeEasy.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly ILogger<UserController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
@@ -19,12 +21,31 @@ namespace MoviesMadeEasy.Controllers
             ILogger<UserController> logger,
             UserManager<IdentityUser> userManager,
             IUserRepository userRepository,
-            ISubscriptionRepository subscriptionService)
+            ISubscriptionRepository subscriptionService) : base(userManager, userRepository, logger)
         {
             _logger = logger;
             _userManager = userManager;
             _userRepository = userRepository;
             _subscriptionService = subscriptionService;
+        }
+
+        private DashboardDTO BuildDashboardDTO(int userId)
+        {
+            var user = _userRepository.GetUser(userId);
+            var userSubscriptions = _subscriptionService.GetUserSubscriptions(userId);
+            var allServices = _subscriptionService.GetAllServices()?.ToList() ?? new List<StreamingService>();
+
+            return new DashboardDTO
+            {
+                UserId = userId,
+                UserName = user != null ? user.FirstName : "",
+                HasSubscriptions = userSubscriptions != null && userSubscriptions.Any(),
+                SubList = userSubscriptions?.ToList() ?? new List<StreamingService>(),
+                AllServicesList = allServices,
+                PreSelectedServiceIds = userSubscriptions != null
+                                        ? string.Join(",", userSubscriptions.Select(s => s.Id))
+                                        : ""
+            };
         }
 
         [Authorize]
@@ -39,22 +60,7 @@ namespace MoviesMadeEasy.Controllers
                 }
 
                 var user = _userRepository.GetUser(identityUser.Id);
-
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-                var userSubscriptions = _subscriptionService.GetUserSubscriptions(user.Id);
-
-                var dto = new DashboardDTO
-                {
-                    UserId = user.Id,
-                    UserName = $"{user.FirstName}",
-                    HasSubscriptions = userSubscriptions != null && userSubscriptions.Any(),
-                    SubList = userSubscriptions?.ToList() ?? new List<StreamingService>()
-                };
-
+                var dto = BuildDashboardDTO(user.Id);
                 return View(dto);
             }
             catch (Exception ex)
@@ -63,60 +69,47 @@ namespace MoviesMadeEasy.Controllers
                 return RedirectToAction("Error");
             }
         }
-        public IActionResult AddSubscriptionForm(DashboardDTO dto)
-        {
-            dto.AvailableServices = _subscriptionService.GetAvailableStreamingServices(dto.UserId);
 
-            return View(dto);
+        public IActionResult SubscriptionForm(DashboardDTO dto)
+        {
+            var updatedDto = BuildDashboardDTO(dto.UserId);
+            return View(updatedDto);
         }
 
         [HttpPost]
         public IActionResult SaveSubscriptions(int userId, string selectedServices)
         {
-            if (string.IsNullOrEmpty(selectedServices))
-            {
-                return RedirectToAction("AddSubscriptionForm", new { userId });
-            }
+            selectedServices = selectedServices ?? "";
 
             try
             {
-                var selectedServiceIds = selectedServices.Split(',').Select(int.Parse).ToList();
+                List<int> selectedServiceIds =
+                    string.IsNullOrWhiteSpace(selectedServices)
+                        ? new List<int>()
+                        : selectedServices.Split(',').Select(int.Parse).ToList();
 
-                _subscriptionService.AddUserSubscriptions(userId, selectedServiceIds);
+                _subscriptionService.UpdateUserSubscriptions(userId, selectedServiceIds);
 
-                TempData["Message"] = "Subscriptions added successfully!";
+                TempData["Message"] = "Subscriptions managed successfully!";
 
-                var userSubscriptions = _subscriptionService.GetUserSubscriptions(userId);
-                var user = _userRepository.GetUser(userId);
-
-                var dto = new DashboardDTO
-                {
-                    UserId = userId,
-                    UserName = user != null ? user.FirstName : "",
-                    HasSubscriptions = userSubscriptions != null && userSubscriptions.Any(),
-                    SubList = userSubscriptions?.ToList() ?? new List<StreamingService>()
-                };
-
+                var dto = BuildDashboardDTO(userId);
                 return View("Dashboard", dto);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error saving subscriptions for userId: {userId}", userId);
 
-                TempData["Message"] = "There was an issue adding your subscription. Please try again later.";
+                TempData["Message"] = "There was an issue managing your subscription. Please try again later.";
 
-                var user = _userRepository.GetUser(userId);
-                var dto = new DashboardDTO
-                {
-                    UserId = userId,
-                    UserName = user != null ? user.FirstName : "",
-                    AvailableServices = _subscriptionService.GetAvailableStreamingServices(userId)
-                };
-
-                return View("AddSubscriptionForm", dto);
+                var dto = BuildDashboardDTO(userId);
+                return View("SubscriptionForm", dto);
             }
         }
 
+        public IActionResult Cancel()
+        {
+            return RedirectToAction("Dashboard");
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
