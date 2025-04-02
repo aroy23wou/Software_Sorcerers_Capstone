@@ -6,6 +6,9 @@ using MoviesMadeEasy.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Polly;
+
+
 
 
 
@@ -32,6 +35,13 @@ else
     builder.Services.AddControllersWithViews();
 }
 
+
+builder.Services.AddHttpClient<IOpenAIService, OpenAIService>()
+    .AddPolicyHandler(Policy<HttpResponseMessage>
+        .Handle<HttpRequestException>()
+        .OrResult(x => (int)x.StatusCode == 429)
+        .WaitAndRetryAsync(3, retryAttempt => 
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
 // Register HttpClient for MovieService
 builder.Services.AddHttpClient<IMovieService, MovieService>();
 builder.Services.AddScoped<IMovieService, MovieService>(provider =>
@@ -43,6 +53,7 @@ builder.Services.AddScoped<IMovieService, MovieService>(provider =>
 
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
 var azurePublish = false;
 

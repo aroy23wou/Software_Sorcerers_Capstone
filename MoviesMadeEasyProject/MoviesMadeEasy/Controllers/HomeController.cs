@@ -13,17 +13,20 @@ namespace MoviesMadeEasy.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly IOpenAIService _openAIService;
         private readonly IMovieService _movieService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly ILogger<BaseController> _logger;
 
         public HomeController(
+            IOpenAIService openAIService,
             IMovieService movieService, 
             UserManager<IdentityUser> userManager, 
             IUserRepository userRepository, 
             ILogger<BaseController> logger) : base(userManager, userRepository, logger) // To be changed if future features require HomeController to use UserManager or IUserRepository
         {
+            _openAIService = openAIService;
             _movieService = movieService;
             _userManager = userManager;
             _userRepository = userRepository;
@@ -33,6 +36,30 @@ namespace MoviesMadeEasy.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        public IActionResult Recommendations()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSimilarMovies(string title)
+        {
+            try
+            {
+                var recommendations = await _openAIService.GetSimilarMoviesAsync(title);
+                return Ok(recommendations);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == (HttpStatusCode)429)
+            {
+                _logger.LogWarning("Rate limit exceeded for {Title}", title);
+                return StatusCode(429, "Too many requests. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting similar movies for {Title}", title);
+                return StatusCode(500, "Error getting recommendations");
+            }
         }
 
         [HttpGet]
