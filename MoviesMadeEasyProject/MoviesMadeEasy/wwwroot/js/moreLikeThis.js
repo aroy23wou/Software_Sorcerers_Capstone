@@ -67,7 +67,8 @@ async function getMoreLikeThis(movieTitle) {
         }
         
         const data = await response.json();
-        
+        console.log(data)
+
         // Redirect to recommendations page with the data
         sessionStorage.setItem('recommendationsData', JSON.stringify({
             originalTitle: movieTitle,
@@ -94,13 +95,15 @@ async function loadRecommendations() {
     }
 
     try {
-        const { choices } = JSON.parse(data);
-        const content = choices[0].message.content;  // Directly retrieve the raw content
-        
-        // Just print the raw OpenAI response content
-        container.innerHTML = `<pre>${content}</pre>`;  // Using <pre> to preserve formatting
+        const parsedData = JSON.parse(data);
+        console.log(parsedData)
+        console.log("test")
+
+        // Directly display the raw content in the container
+        container.innerHTML = `<p>${JSON.stringify(parsedData)}<p>`;  // Using <pre> to preserve formatting
 
     } catch (error) {
+        console.log(error)
         console.error("Error loading recommendations:", error);
         container.innerHTML = '<div class="error-message">Error displaying recommendations.</div>';
     }
