@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MoviesMadeEasy.DTOs;
-
+using System.Net; 
+using System.Text.Json;
 namespace MoviesMadeEasy.Controllers
+
 {
     public class HomeController : BaseController
     {
@@ -48,17 +50,29 @@ namespace MoviesMadeEasy.Controllers
             try
             {
                 var recommendations = await _openAIService.GetSimilarMoviesAsync(title);
+                
+                // Store recommendations in session for the recommendations page
+                HttpContext.Session.SetString("LastRecommendations", 
+                    JsonSerializer.Serialize(recommendations));
+                HttpContext.Session.SetString("LastRecommendationTitle", title);
+                
                 return Ok(recommendations);
             }
-            catch (HttpRequestException ex) when (ex.StatusCode == (HttpStatusCode)429)
+            catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests)
             {
-                _logger.LogWarning("Rate limit exceeded for {Title}", title);
-                return StatusCode(429, "Too many requests. Please try again later.");
+                _logger.LogWarning("OpenAI rate limit exceeded for {Title}", title);
+                return StatusCode(429, new { 
+                    error = "rate_limit_exceeded",
+                    message = "We're getting too many requests. Please wait a moment and try again." 
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting similar movies for {Title}", title);
-                return StatusCode(500, "Error getting recommendations");
+                return StatusCode(500, new {
+                    error = "server_error",
+                    message = "Something went wrong. Please try again later."
+                });
             }
         }
 

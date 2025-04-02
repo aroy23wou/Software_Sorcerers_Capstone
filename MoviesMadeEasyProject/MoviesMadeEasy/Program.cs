@@ -6,11 +6,10 @@ using MoviesMadeEasy.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Polly;
-
-
-
-
+using Polly.Extensions.Http;
+using Microsoft.AspNetCore.Session; // Add this for session support
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +33,6 @@ else
 {
     builder.Services.AddControllersWithViews();
 }
-
 
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>()
     .AddPolicyHandler(Policy<HttpResponseMessage>
@@ -65,7 +63,6 @@ var authConnectionString = builder.Configuration.GetConnectionString(
     azurePublish ? "AzureIdentityConnection" : "IdentityConnection") ??
     throw new InvalidOperationException("Identity Connection string not found.");
 
-
 builder.Services.AddDbContext<UserDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(connectionString));
 
@@ -79,9 +76,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
 .AddEntityFrameworkStores<IdentityDbContext>();
 
-
 builder.Services.AddRazorPages();
 
+// **Add Session Services**
+builder.Services.AddDistributedMemoryCache(); // Add memory cache for session state
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -98,8 +102,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+// **Use Session Middleware**
+app.UseSession();  // Add this line to use session middleware
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

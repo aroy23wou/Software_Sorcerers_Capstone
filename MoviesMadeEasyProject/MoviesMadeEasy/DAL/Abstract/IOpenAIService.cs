@@ -6,8 +6,9 @@ public interface IOpenAIService
     // Add other OpenAI operations you might need
 }
 
-public record MovieRecommendation(
-    string Title,
-    string Year,
-    string Reason
-);
+public class MovieRecommendation
+{
+    public string Title { get; set; }
+    public int Year { get; set; }  // Change from string to int
+    public string Reason { get; set; }
+}

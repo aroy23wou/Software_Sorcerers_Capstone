@@ -33,18 +33,21 @@ public class OpenAIService : IOpenAIService
                 - Title
                 - Release year
                 - Brief reason for the recommendation
-                
+
                 Format the response as a JSON array with properties: 
                 title, year, reason.
                 """;
 
             var response = await GetChatCompletionAsync(prompt);
-            
-            // Parse the JSON response
+
+            // Clean the response by removing the code block delimiters
+            var cleanedResponse = response.Replace("```json\n", "").Replace("\n```", "");
+
+            // Parse the cleaned JSON response
             var recommendations = JsonSerializer.Deserialize<List<MovieRecommendation>>(
-                response,
+                cleanedResponse,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            
+
             return recommendations ?? new List<MovieRecommendation>();
         }
         catch (Exception ex)
@@ -53,6 +56,7 @@ public class OpenAIService : IOpenAIService
             throw; // Or return empty list if you prefer graceful degradation
         }
     }
+
 
     public async Task<string> GetChatCompletionAsync(string prompt)
     {
@@ -88,6 +92,9 @@ public class OpenAIService : IOpenAIService
                 response.EnsureSuccessStatusCode();
                 
                 var result = await response.Content.ReadFromJsonAsync<OpenAICompletionResponse>();
+                var resultContent = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Raw OpenAI response: {ResponseContent}", resultContent);
+
                 return result?.Choices?.FirstOrDefault()?.Message?.Content ?? string.Empty;
             }
             catch (HttpRequestException ex) when (attempt < maxRetries)

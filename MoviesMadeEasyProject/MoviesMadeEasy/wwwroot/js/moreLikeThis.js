@@ -10,12 +10,44 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function setupMoreLikeThisButtons() {
     // Use event delegation for dynamically created buttons
-    document.addEventListener("click", function(event) {
+    document.addEventListener('click', async function(event) {
         if (event.target.classList.contains('btn-outline-secondary') && 
             event.target.textContent.trim() === "More Like This") {
+            
             const movieCard = event.target.closest('.movie-card');
             const movieTitle = movieCard.querySelector('h5').textContent.split(' (')[0].trim();
-            getMoreLikeThis(movieTitle);
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            try {
+                loadingSpinner.style.display = 'block';
+                
+                const response = await fetch(`/Home/GetSimilarMovies?title=${encodeURIComponent(movieTitle)}`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Request failed');
+                }
+                
+                const recommendations = await response.json();
+                
+                // Store recommendations and redirect
+                sessionStorage.setItem('recommendations', JSON.stringify(recommendations));
+                sessionStorage.setItem('originalTitle', movieTitle);
+                window.location.href = '/Home/Recommendations';
+                
+            } catch (error) {
+                loadingSpinner.style.display = 'none';
+                
+                if (error.message.includes('rate_limit_exceeded')) {
+                    alert('⚠️ Please wait a moment before requesting more recommendations. Our system is getting too many requests.');
+                } else {
+                    alert('❌ Failed to get recommendations. Please try again later.');
+                }
+                
+                console.error('Error:', error);
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
         }
     });
 }
@@ -51,32 +83,23 @@ async function getMoreLikeThis(movieTitle) {
     }
 }
 
-function loadRecommendations() {
+async function loadRecommendations() {
     const container = document.getElementById("recommendationsContainer");
     const loadingSpinner = document.getElementById("loadingSpinner");
-    const data = sessionStorage.getItem('recommendationsData');
+    const data = sessionStorage.getItem('recommendations');
     
     if (!data) {
         container.innerHTML = '<div class="error-message">No recommendations data found. Please start a new search.</div>';
         return;
     }
-    
+
     try {
-        const { originalTitle, recommendations } = JSON.parse(data);
-        document.getElementById("originalTitle").textContent = originalTitle;
+        const { choices } = JSON.parse(data);
+        const content = choices[0].message.content;  // Directly retrieve the raw content
         
-        if (!recommendations || recommendations.length === 0) {
-            container.innerHTML = '<div class="no-results">No recommendations found for this movie.</div>';
-            return;
-        }
-        
-        container.innerHTML = recommendations.map(movie => `
-            <div class="recommendation-card">
-                <h4>${movie.title || 'Unknown Title'}</h4>
-                <p>${movie.year ? `(${movie.year})` : ''}</p>
-                <p>${movie.reason || 'Similar in theme and style'}</p>
-            </div>
-        `).join('');
+        // Just print the raw OpenAI response content
+        container.innerHTML = `<pre>${content}</pre>`;  // Using <pre> to preserve formatting
+
     } catch (error) {
         console.error("Error loading recommendations:", error);
         container.innerHTML = '<div class="error-message">Error displaying recommendations.</div>';
