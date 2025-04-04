@@ -51,11 +51,12 @@ namespace MoviesMadeEasy.Controllers
             {
                 var recommendations = await _openAIService.GetSimilarMoviesAsync(title);
                 
-                // Store recommendations in session for the recommendations page
+                // Store the full recommendations in session for the recommendations page
                 HttpContext.Session.SetString("LastRecommendations", 
                     JsonSerializer.Serialize(recommendations));
                 HttpContext.Session.SetString("LastRecommendationTitle", title);
                 
+                // Return the recommendations as JSON
                 return Ok(recommendations);
             }
             catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests)
@@ -63,7 +64,7 @@ namespace MoviesMadeEasy.Controllers
                 _logger.LogWarning("OpenAI rate limit exceeded for {Title}", title);
                 return StatusCode(429, new { 
                     error = "rate_limit_exceeded",
-                    message = "We're getting too many requests. Please wait a moment and try again." 
+                    message = "We're getting too many requests. Please try again later." 
                 });
             }
             catch (Exception ex)

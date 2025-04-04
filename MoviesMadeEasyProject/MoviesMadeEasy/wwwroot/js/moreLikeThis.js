@@ -84,27 +84,31 @@ async function getMoreLikeThis(movieTitle) {
     }
 }
 
-async function loadRecommendations() {
+function loadRecommendations() {
     const container = document.getElementById("recommendationsContainer");
-    const loadingSpinner = document.getElementById("loadingSpinner");
-    const data = sessionStorage.getItem('recommendations');
-    
-    if (!data) {
-        container.innerHTML = '<div class="error-message">No recommendations data found. Please start a new search.</div>';
+    const recommendationsData = sessionStorage.getItem('recommendations');
+    const originalTitle = sessionStorage.getItem('originalTitle');
+
+    if (!recommendationsData) {
+        container.innerHTML = '<div class="alert alert-warning">No recommendations found. Please try searching again.</div>';
         return;
     }
 
     try {
-        const parsedData = JSON.parse(data);
-        console.log(parsedData)
-        console.log("test")
+        const recommendations = JSON.parse(recommendationsData);
+        
+        let html = `<h3>Movies similar to "${originalTitle}":</h3><ul class="list-group">`;
 
-        // Directly display the raw content in the container
-        container.innerHTML = `<p>${JSON.stringify(parsedData)}<p>`;  // Using <pre> to preserve formatting
-
+        recommendations.forEach(movie => {
+            // Only display the movie title and year, without the raw object representation
+            html += `<li class="list-group-item">${movie.title} (${movie.year})</li>`;
+        });
+        
+        html += '</ul>';
+        
+        container.innerHTML = html;
     } catch (error) {
-        console.log(error)
         console.error("Error loading recommendations:", error);
-        container.innerHTML = '<div class="error-message">Error displaying recommendations.</div>';
+        container.innerHTML = '<div class="alert alert-danger">Error displaying recommendations. Please try again.</div>';
     }
 }
