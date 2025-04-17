@@ -109,11 +109,8 @@ function loadRecommendations() {
             html += `
                 <article class="movie-card" data-genres="${genres}" data-overview="${overview}" data-streaming="${services}">
                     <div class="movie-row" aria-label="Recommendation card for ${movie.title}">
-                        <img src="${posterUrl}" class="movie-poster" alt="${movie.title} movie poster">
                         <div class="movie-details">
                             <h5>${movie.title} <span class="movie-year">(${movie.year || 'N/A'})</span></h5>
-                            <p class="movie-genres">Genres: ${genres}</p>
-                            <p class="movie-rating">Rating: ${rating}</p>
                             <button class="btn btn-primary">View Details</button>
                             <button class="btn btn-outline-secondary">More Like This</button>
                         </div>
