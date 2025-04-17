@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
-    //listens for the dynamically added elements
-    document.body.addEventListener("click", (event) => {
-        if (event.target.matches(".btn-primary")) {
-            openModal(event.target);
-        }
-    });
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     //listens for the dynamically added elements
+//     document.body.addEventListener("click", (event) => {
+//         if (event.target.matches(".btn-primary")) {
+//             openModal(event.target);
+//         }
+//     });
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("results").addEventListener("click", function (event) {
