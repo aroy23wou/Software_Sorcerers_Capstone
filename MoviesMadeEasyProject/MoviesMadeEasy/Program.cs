@@ -38,7 +38,7 @@ builder.Services.AddHttpClient<IOpenAIService, OpenAIService>()
     .AddPolicyHandler(Policy<HttpResponseMessage>
         .Handle<HttpRequestException>()
         .OrResult(x => (int)x.StatusCode == 429)
-        .WaitAndRetryAsync(3, retryAttempt => 
+        .WaitAndRetryAsync(3, retryAttempt =>
             TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
 // Register HttpClient for MovieService
 builder.Services.AddHttpClient<IMovieService, MovieService>();
@@ -52,6 +52,7 @@ builder.Services.AddScoped<IMovieService, MovieService>(provider =>
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
+builder.Services.AddScoped<ITitleRepository, TitleRepository>();
 
 var azurePublish = false;
 
@@ -68,6 +69,8 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(authConnectionString));
+
+builder.Services.AddScoped<DbContext>(sp => sp.GetRequiredService<UserDbContext>());
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
@@ -99,8 +102,8 @@ if (!app.Environment.IsDevelopment())
 //-------------------------------------------------------------------------------
 // Seed test User: Uncomment out when running bdd tests
 //--------------------------------------------------------------------------------
-// using (var scope = app.Services.CreateScope())
-// {
+//using (var scope = app.Services.CreateScope())
+//{
 //    var services = scope.ServiceProvider;
 //    try
 //    {
@@ -111,7 +114,7 @@ if (!app.Environment.IsDevelopment())
 //        var logger = services.GetRequiredService<ILogger<Program>>();
 //        logger.LogError(ex, "An error occurred seeding the DB.");
 //    }
-// }
+//}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -128,6 +131,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages(); 
+app.MapRazorPages();
 
 app.Run();
