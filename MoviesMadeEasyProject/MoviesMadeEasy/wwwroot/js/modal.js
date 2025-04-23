@@ -1,12 +1,3 @@
-// document.addEventListener("DOMContentLoaded", () => {
-//     //listens for the dynamically added elements
-//     document.body.addEventListener("click", (event) => {
-//         if (event.target.matches(".btn-primary")) {
-//             openModal(event.target);
-//         }
-//     });
-// });
-
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("results").addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-primary")) {
@@ -18,15 +9,42 @@ document.addEventListener("DOMContentLoaded", function () {
             let rating = movieCard.querySelector(".movie-rating").textContent.replace("Rating: ", "");
             
             let overview = movieCard.getAttribute("data-overview") || "No overview available.";
-            let streamingServices = movieCard.getAttribute("data-streaming") || "Not available on streaming platforms.";
+            let streamingServices = movieCard.getAttribute("data-streaming") || "";
 
-            //populate the modal with movie details
+            // Populate the modal with movie details
             document.getElementById("modalTitle").textContent = title;
             document.getElementById("modalPoster").src = posterUrl;
             document.getElementById("modalGenres").textContent = `Genres: ${genres}`;
             document.getElementById("modalRating").textContent = `Rating: ${rating}`;
             document.getElementById("modalOverview").textContent = `Overview: ${overview}`;
-            document.getElementById("modalStreaming").textContent = `Streaming Services: ${streamingServices}`;
+            
+            // Clear previous streaming icons
+            const streamingContainer = document.getElementById("modalStreaming");
+            streamingContainer.innerHTML = "";
+            
+            // Add streaming service icons if available
+            if (streamingServices) {
+                const services = streamingServices.split(",");
+                console.log(services)
+                services.forEach(service => {
+                    const trimmedService = service.trim();
+                    if (trimmedService) {
+                        const icon = document.createElement("img");
+                        icon.src = getStreamingServiceLogo(trimmedService);
+                        icon.alt = trimmedService;
+                        icon.title = trimmedService; // Show service name on hover
+                        icon.className = "streaming-icon";
+                        icon.style.width = "40px";
+                        icon.style.height = "40px";
+                        icon.style.objectFit = "contain";
+                        icon.style.marginRight = "5px";
+                        streamingContainer.appendChild(icon);
+                    }
+                    console.log(trimmedService)
+                });
+            } else {
+                streamingContainer.textContent = "Not available on streaming platforms.";
+            }
 
             // Show the modal
             var movieModal = new bootstrap.Modal(document.getElementById("movieModal"));
@@ -35,22 +53,32 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("similar-movie").addEventListener("click", function (event) {
-        if (event.target.classList.contains("btn-primary")) {
-            console.log("test")
-        }
-    });
-});
+// Helper function to get logo URLs for streaming services
+function getStreamingServiceLogo(serviceName) {
+    const serviceLogos = {
+        'Netflix': '/images/Netflix_Symbol_RGB.png',
+        'Hulu': '/images/hulu-Green-digital.png',
+        'Disney+': '/images/disney_logo_march_2024_050fef2e.png',
+        'Prime Video': '/images/AmazonPrimeVideo.png',
+        'Max': '/images/maxlogo.jpg',
+        'Apple TV': '/images/AppleTV-iOS.png',
+        'Peacock': '/images/Peacock_P.png',
+        'Paramount+': '/images/Paramountplus.png',
+        'Starz': '/images/Starz_Prism_Button_Option_01.png',
+        'Tubi': '/images/tubitvlogo.png',
+        'Pluto TV': '/images/Pluto-TV-Logo.jpg',
+        'BritBox': '/images/britboxlogo.png',
+        'AMC+': '/images/amcpluslogo.png'
+    };
+    
+    return serviceLogos[serviceName] || ''; // Return empty string if no logo found
+}
 
+// Update the recommendationsContainer event listener similarly
 document.addEventListener('DOMContentLoaded', function() {
-    // Set up event delegation for the view details buttons
     document.getElementById('recommendationsContainer')?.addEventListener('click', async function(event) {
-        // Check if a view details button was clicked
         if (event.target.classList.contains('btn-primary') && 
             event.target.textContent.trim() === 'View Details') {
-            
-            console.log("View Details button clicked - fetching movie data");
             
             const movieCard = event.target.closest('.movie-card');
             
@@ -67,7 +95,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const modalTitle = document.getElementById('modalTitle');
                     modalTitle.textContent = "Loading...";
                     
-                    // Fetch movie details from API
+                    // Clear previous streaming icons
+                    const streamingContainer = document.getElementById('modalStreaming');
+                    streamingContainer.innerHTML = "";
+                    
                     const response = await fetch(`/Home/SearchMovies?query=${encodeURIComponent(title)}`);
                     const results = await response.json();
                     
@@ -86,9 +117,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     document.getElementById('modalOverview').textContent = 
                         `Overview: ${movie.overview || "No overview available"}`;
-
-                    document.getElementById('modalStreaming').textContent = 
-                        `Available on: ${movie.services?.join(", ") || "Not available on any streaming services"}`;
+                    
+                    // Add streaming service icons if available
+                    if (movie.services && movie.services.length > 0) {
+                        movie.services.forEach(service => {
+                            const trimmedService = service.trim();
+                            if (trimmedService) {
+                                const icon = document.createElement("img");
+                                icon.src = getStreamingServiceLogo(trimmedService);
+                                icon.alt = trimmedService;
+                                icon.title = trimmedService;
+                                icon.className = "streaming-icon";
+                                icon.style.width = "40px";
+                                icon.style.height = "40px";
+                                icon.style.objectFit = "contain";
+                                icon.style.marginRight = "5px";
+                                streamingContainer.appendChild(icon);
+                            }
+                        });
+                    } else {
+                        streamingContainer.textContent = "Not available on streaming platforms.";
+                    }
                     
                     const posterImg = document.getElementById('modalPoster');
                     posterImg.src = movie.posterUrl || 'https://via.placeholder.com/150';
