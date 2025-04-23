@@ -102,13 +102,13 @@ namespace MyBddProject.Tests.Features
             {
                 await this.ScenarioStartAsync();
 #line 4
-    await testRunner.GivenAsync("the user is on the search page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+    await testRunner.GivenAsync("the user is on the search page for icons test", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 5
-    await testRunner.WhenAsync("the user enters \"Hunger Games\" in the search bar", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync("the user enters \"Hunger Games\" into the search bar", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 6
-    await testRunner.ThenAsync("the user search should show results for \"Hunger Games\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.ThenAsync("the search should show results for \"Hunger Games\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -132,13 +132,13 @@ namespace MyBddProject.Tests.Features
             {
                 await this.ScenarioStartAsync();
 #line 9
-    await testRunner.GivenAsync("the user has searched for \"Hunger Games\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+    await testRunner.GivenAsync("the user has searched for the \"Hunger Games\" movie", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 10
-    await testRunner.WhenAsync("the user clicks the \"View Details\" button on the first result", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync("the user clicks View Details on the first result", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 11
-    await testRunner.ThenAsync("the user should see the details modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+    await testRunner.ThenAsync("the user should see the view details modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -162,193 +162,13 @@ namespace MyBddProject.Tests.Features
             {
                 await this.ScenarioStartAsync();
 #line 14
-    await testRunner.GivenAsync("the user has clicked the View Details button", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+    await testRunner.GivenAsync("the user has clicked the View Details button from search results", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 15
     await testRunner.WhenAsync("the user is on the modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 16
     await testRunner.ThenAsync("the user should see the Apple TV, Netflix, and Prime Video icons", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Check that redirection to service works")]
-        public async System.Threading.Tasks.Task CheckThatRedirectionToServiceWorks()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check that redirection to service works", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 18
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 19
-    await testRunner.GivenAsync("the user is on the modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 20
-    await testRunner.WhenAsync("the user clicks the netflix icon", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 21
-    await testRunner.ThenAsync("the user should be redirected to the Netflix login page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Check that back-navigation works")]
-        public async System.Threading.Tasks.Task CheckThatBack_NavigationWorks()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check that back-navigation works", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 23
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 24
-    await testRunner.GivenAsync("the user is on the Netflix login page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 25
-    await testRunner.WhenAsync("the user clicks the back button", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 26
-    await testRunner.ThenAsync("the user should be redirected to the search page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Navigate to the other area with streaming service icons")]
-        public async System.Threading.Tasks.Task NavigateToTheOtherAreaWithStreamingServiceIcons()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate to the other area with streaming service icons", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 28
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 29
-    await testRunner.GivenAsync("the user is on the Search results page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 30
-    await testRunner.WhenAsync("the user clicks the \"More Like This\" button for \"The Hunger Games\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 31
-    await testRunner.ThenAsync("the user should be redirected to the recommendations page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Navigate to the recommendations details modal")]
-        public async System.Threading.Tasks.Task NavigateToTheRecommendationsDetailsModal()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Navigate to the recommendations details modal", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 33
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 34
-    await testRunner.GivenAsync("the user is on the recommendations page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 35
-    await testRunner.WhenAsync("the user clicks the \"View Details\" button on the first result", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 36
-    await testRunner.ThenAsync("the user should see the details modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Check if recommendations streaming service icons exist")]
-        public async System.Threading.Tasks.Task CheckIfRecommendationsStreamingServiceIconsExist()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check if recommendations streaming service icons exist", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 38
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 39
-    await testRunner.GivenAsync("the user has clicked the View Details button", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 40
-    await testRunner.WhenAsync("the user is on the modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 41
-    await testRunner.ThenAsync("the user should see the streaming service icons", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Check that redirection to recommendations service works")]
-        public async System.Threading.Tasks.Task CheckThatRedirectionToRecommendationsServiceWorks()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Check that redirection to recommendations service works", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 43
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 44
-    await testRunner.GivenAsync("the user is on the modal pop up", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 45
-    await testRunner.WhenAsync("the user clicks the first service icon", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 46
-    await testRunner.ThenAsync("the user should be redirected to the respective login page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
