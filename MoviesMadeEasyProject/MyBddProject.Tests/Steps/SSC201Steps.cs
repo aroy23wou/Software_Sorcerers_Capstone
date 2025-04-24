@@ -127,19 +127,5 @@ namespace MyBddProject.Tests.Steps
             Assert.IsTrue(_modalPage.IsStreamingIconDisplayed("Prime Video"), "Prime Video icon should be displayed");
         }
 
-        // [When(@"the user clicks the (.*) icon")]
-        // public void WhenTheUserClicksTheServiceIcon(string serviceName)
-        // {
-        //     _modalPage.ClickStreamingIcon(serviceName);
-        // }
-
-        // [Then(@"the user should be redirected to the (.*) login page")]
-        // public void ThenTheUserShouldBeRedirectedToTheServiceLoginPage(string serviceName)
-        // {
-        //     var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
-        //     wait.Until(d => d.Url.ToLower().Contains(serviceName.ToLower().Replace(" ", "")));
-        //     Assert.IsTrue(_driver.Url.ToLower().Contains(serviceName.ToLower().Replace(" ", "")), 
-        //         $"Should be redirected to {serviceName} login page");
-        // }
     }
 }

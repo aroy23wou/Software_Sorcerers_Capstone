@@ -15,15 +15,15 @@ Feature: Show streaming service icons and links in view details
     When the user is on the modal pop up
     Then the user should see the Apple TV, Netflix, and Prime Video icons
 
-#   Scenario: Check that redirection to service works
-#     Given the user is on the modal pop up
-#     When the user clicks the netflix icon
-#     Then the user should be redirected to the Netflix login page
+  Scenario: Check that redirection to service works
+    Given the user is on the modal pop up
+    When the user clicks the netflix icon
+    Then the user should be redirected to the Netflix login page
 
-#   Scenario: Check that back-navigation works
-#     Given the user is on the Netflix login page
-#     When the user clicks the back button
-#     Then the user should be redirected to the search page
+  Scenario: Check that back-navigation works
+    Given the user is on the Netflix login page
+    When the user clicks the back button
+    Then the user should be redirected to the search page
 
 #   Scenario: Navigate to the other area with streaming service icons
 #     Given the user is on the Search results page
