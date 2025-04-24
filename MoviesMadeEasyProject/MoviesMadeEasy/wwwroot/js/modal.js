@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 services.forEach(service => {
                     const trimmedService = service.trim();
                     if (trimmedService) {
-<<<<<<< HEAD
                         const link = document.createElement("a");
                         link.href = getStreamingServiceLink(trimmedService); // Use the function that returns links
                         link.target = "_blank"; // Open in new tab
@@ -39,27 +38,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         icon.src = getStreamingServiceLogo(trimmedService); // This should return the image URL
                         icon.alt = trimmedService;
                         icon.title = trimmedService;
-=======
-                        const icon = document.createElement("img");
-                        icon.src = getStreamingServiceLogo(trimmedService);
-                        icon.alt = trimmedService;
-                        icon.title = trimmedService; // Show service name on hover
->>>>>>> dev
+
                         icon.className = "streaming-icon";
                         icon.style.width = "40px";
                         icon.style.height = "40px";
                         icon.style.objectFit = "contain";
                         icon.style.marginRight = "5px";
-<<<<<<< HEAD
                         
                         link.appendChild(icon);
                         streamingContainer.appendChild(link);
                     }
-=======
-                        streamingContainer.appendChild(icon);
-                    }
-                    console.log(trimmedService)
->>>>>>> dev
                 });
             } else {
                 streamingContainer.textContent = "Not available on streaming platforms.";
@@ -92,7 +80,6 @@ function getStreamingServiceLogo(serviceName) {
     
     return serviceLogos[serviceName] || ''; // Return empty string if no logo found
 }
-<<<<<<< HEAD
 
 function getStreamingServiceLink(serviceName) {
     const serviceLinks = {
@@ -113,29 +100,21 @@ function getStreamingServiceLink(serviceName) {
     
     return serviceLinks[serviceName] || '#'; // Return empty string if no logo found
 };
-=======
->>>>>>> dev
 
 // Update the recommendationsContainer event listener similarly
 document.addEventListener('DOMContentLoaded', function() {
-<<<<<<< HEAD
     let modal = null; // Store modal instance outside the click handler
     let isModalLoading = false; // Track if modal is currently loading
-    
-=======
->>>>>>> dev
+
     document.getElementById('recommendationsContainer')?.addEventListener('click', async function(event) {
         if (event.target.classList.contains('btn-primary') && 
             event.target.textContent.trim() === 'View Details') {
             
-<<<<<<< HEAD
             // Prevent multiple clicks while loading
             if (isModalLoading) return;
             isModalLoading = true;
             event.target.disabled = true;
             
-=======
->>>>>>> dev
             const movieCard = event.target.closest('.movie-card');
             
             if (movieCard) {
@@ -170,14 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Show modal immediately with loading state
                     modal.show();
-                    
-<<<<<<< HEAD
-=======
-                    // Clear previous streaming icons
-                    const streamingContainer = document.getElementById('modalStreaming');
-                    streamingContainer.innerHTML = "";
-                    
->>>>>>> dev
                     const response = await fetch(`/Home/SearchMovies?query=${encodeURIComponent(title)}`);
                     const results = await response.json();
                     
@@ -195,30 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         `Rating: ${movie.rating || "No rating available"}`;
                     document.getElementById('modalOverview').textContent = 
                         `Overview: ${movie.overview || "No overview available"}`;
-<<<<<<< HEAD
-=======
-                    
-                    // Add streaming service icons if available
-                    if (movie.services && movie.services.length > 0) {
-                        movie.services.forEach(service => {
-                            const trimmedService = service.trim();
-                            if (trimmedService) {
-                                const icon = document.createElement("img");
-                                icon.src = getStreamingServiceLogo(trimmedService);
-                                icon.alt = trimmedService;
-                                icon.title = trimmedService;
-                                icon.className = "streaming-icon";
-                                icon.style.width = "40px";
-                                icon.style.height = "40px";
-                                icon.style.objectFit = "contain";
-                                icon.style.marginRight = "5px";
-                                streamingContainer.appendChild(icon);
-                            }
-                        });
-                    } else {
-                        streamingContainer.textContent = "Not available on streaming platforms.";
-                    }
->>>>>>> dev
                     
                     // Clear and add streaming services
                     streamingContainer.innerHTML = '';

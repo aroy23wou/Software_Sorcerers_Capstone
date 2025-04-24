@@ -236,11 +236,9 @@ namespace MyBddProject.Tests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Clicking More Like This button")]
-        [NUnit.Framework.CategoryAttribute("test2")]
         public async System.Threading.Tasks.Task ClickingMoreLikeThisButton()
         {
-            string[] tagsOfScenario = new string[] {
-                    "test2"};
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Clicking More Like This button", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 28
