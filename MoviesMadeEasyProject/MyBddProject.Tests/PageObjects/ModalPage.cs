@@ -97,6 +97,7 @@ namespace MyBddProject.PageObjects
                 return false;
             }
         }
+<<<<<<< HEAD
 
         public void ClickMoreLikeThisButton()
         {
@@ -124,5 +125,7 @@ namespace MyBddProject.PageObjects
                         .Select(e => e.Text)
                         .ToList();
         }
+=======
+>>>>>>> dev
     }
 }
