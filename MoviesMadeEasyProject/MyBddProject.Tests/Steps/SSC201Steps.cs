@@ -15,12 +15,14 @@ namespace MyBddProject.Tests.Steps
         private readonly SearchPage _searchPage;
         private readonly ModalPage _modalPage;
         private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(30);
+        private readonly RecommendationsPage _recommendationsPage;
 
         public StreamingServiceSteps(IWebDriver driver)
         {
             _driver = driver;
             _searchPage = new SearchPage(driver);
             _modalPage = new ModalPage(driver);
+            _recommendationsPage = new RecommendationsPage(driver);
         }
 
         [AfterScenario]
@@ -47,7 +49,7 @@ namespace MyBddProject.Tests.Steps
 
         // Modify the GivenTheUserIsOnTheSearchPage method
         [Given(@"the user is on the search page for icons test")]
-        public void GivenTheUserIsOnTheSearchPage()
+        public void GivenTheUserIsOnSearchPage()
         {
             try 
             {
@@ -78,7 +80,7 @@ namespace MyBddProject.Tests.Steps
         }
 
         [Then(@"the search should show results for ""(.*)""")]
-        public void ThenTheUserSearchShouldShowResultsFor(string expectedResult)
+        public void ThenTheUserSearchShouldTheShowResultsFor(string expectedResult)
         {
             Assert.IsTrue(_searchPage.ResultsContain(expectedResult));
         }
@@ -86,7 +88,7 @@ namespace MyBddProject.Tests.Steps
         [Given(@"the user has searched for the ""(.*)"" movie")]
         public void GivenTheUserHasSearchedFor201(string searchTerm)
         {
-            GivenTheUserIsOnTheSearchPage();
+            GivenTheUserIsOnSearchPage();
             WhenTheUserEntersInTheSearchBar(searchTerm);
             ThenTheUserSearchShouldShowResultsFor(searchTerm);
         }
@@ -125,6 +127,94 @@ namespace MyBddProject.Tests.Steps
             Assert.IsTrue(_modalPage.IsStreamingIconDisplayed("Apple TV"), "Apple TV icon should be displayed");
             Assert.IsTrue(_modalPage.IsStreamingIconDisplayed("Netflix"), "Netflix icon should be displayed");
             Assert.IsTrue(_modalPage.IsStreamingIconDisplayed("Prime Video"), "Prime Video icon should be displayed");
+        }
+
+
+        [Given(@"the user is on the modal pop up")]
+        public void GivenTheUserIsOnTheModalPopUp()
+        {
+            GivenTheUserHasClickedTheViewDetailsButtonFromSearch();
+            WhenTheUserIsOnTheModalPopUp();
+        }
+
+        [When(@"the user clicks the netflix icon")]
+        public void WhenTheUserClicksTheNetflixIcon()
+        {
+            _modalPage.ClickStreamingIcon("Netflix");
+            
+            // Wait for new window/tab to open
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            wait.Until(d => d.WindowHandles.Count > 1);
+            
+            // Switch to the new window
+            _driver.SwitchTo().Window(_driver.WindowHandles.Last());
+        }
+
+        [Then(@"the user should be redirected to the Netflix login page")]
+        public void ThenTheUserShouldBeRedirectedToTheNetflixLoginPage()
+        {
+            // Wait for page to load
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            wait.Until(d => d.Url.Contains("netflix.com/login"));
+            
+            Assert.IsTrue(_driver.Url.Contains("netflix.com/login"), 
+                $"Expected to be on Netflix login page but was on {_driver.Url}");
+        }
+
+        [Given(@"the user is in the search section")]
+        public void GivenTheUserIsAtSearchPage()
+        {
+            // Navigate to the root URL if not already there
+            if (!_driver.Url.Contains("localhost:5000"))
+            {
+                _driver.Navigate().GoToUrl("http://localhost:5000/");
+            }
+            
+            // Optionally, you could verify the search page elements are present
+            Assert.IsTrue(_driver.PageSource.Contains("Movie Search")); // Verify the page title
+            Assert.IsTrue(_driver.FindElement(By.Id("searchInput")).Displayed); // Verify search input is present
+        }
+
+        [When(@"the user enters the movie ""(.*)"" in the search bar")]
+        public void WhenTheUserEntersTheSearchBar(string searchTerm)
+        {
+            _searchPage.EnterSearchTerm(searchTerm);
+            _searchPage.SubmitSearch();
+        }
+
+        [Then(@"the search should show the results for ""(.*)""")]
+        public void ThenTheUserSearchShouldShowResultsFor(string expectedResult)
+        {
+            Assert.IsTrue(_searchPage.ResultsContain(expectedResult));
+        }
+
+        [Given(@"the user has searched for the ""(.*)""")]
+        public void GivenTheUserHasSearchedFor(string searchTerm)
+        {
+            GivenTheUserIsAtSearchPage();
+            WhenTheUserEntersTheSearchBar(searchTerm);
+            ThenTheUserSearchShouldShowResultsFor(searchTerm);
+        }
+
+        [When(@"the user clicks the ""More Like This"" button for the first result")]
+        public void WhenTheUserClicksTheMoreLikeThisButton()
+        {
+            // Wait for results to load first
+            new WebDriverWait(_driver, TimeSpan.FromSeconds(10))
+                .Until(d => d.FindElements(By.CssSelector(".movie-card")).Count > 0);
+            
+            _searchPage.ClickMoreLikeThis();
+            
+            // Wait for recommendations page to load
+            new WebDriverWait(_driver, TimeSpan.FromSeconds(10))
+                .Until(d => d.Url.Contains("Recommendations"));
+        }
+
+        [Then(@"the user should be redirected to a page with the Openai results")]
+        public void ThenUserShouldSeeRecommendations()
+        {
+            Assert.IsTrue(_driver.Url.Contains("Recommendations"));
+            Assert.Greater(_recommendationsPage.RecommendationCount(), 0);
         }
 
     }

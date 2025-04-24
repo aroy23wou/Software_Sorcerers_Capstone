@@ -97,5 +97,32 @@ namespace MyBddProject.PageObjects
                 return false;
             }
         }
+
+        public void ClickMoreLikeThisButton()
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            var button = wait.Until(d => d.FindElement(By.CssSelector(".btn-more-like-this")));
+            button.Click();
+        }
+
+        public bool AreRecommendationsDisplayed()
+        {
+            try
+            {
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+                return wait.Until(d => d.FindElements(By.CssSelector(".recommendation-item")).Count > 0);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public List<string> GetRecommendationTitles()
+        {
+            return _driver.FindElements(By.CssSelector(".recommendation-item h5"))
+                        .Select(e => e.Text)
+                        .ToList();
+        }
     }
 }
