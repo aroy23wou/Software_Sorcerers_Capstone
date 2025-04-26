@@ -52,7 +52,6 @@ namespace MyBddProject.Tests.Steps
         // Modify the GivenTheUserIsOnTheSearchPage method
         [Given(@"the user is on the search page for icons test")]
         public void GivenTheUserIsOnSearchPage()
-        public void GivenTheUserIsOnSearchPage()
         {
             try 
             {
@@ -83,7 +82,6 @@ namespace MyBddProject.Tests.Steps
         }
 
         [Then(@"the search should show results for ""(.*)""")]
-        public void ThenTheUserSearchShouldTheShowResultsFor(string expectedResult)
         public void ThenTheUserSearchShouldTheShowResultsFor(string expectedResult)
         {
             Assert.IsTrue(_searchPage.ResultsContain(expectedResult));
