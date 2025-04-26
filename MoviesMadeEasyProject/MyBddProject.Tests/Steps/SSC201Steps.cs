@@ -16,12 +16,14 @@ namespace MyBddProject.Tests.Steps
         private readonly ModalPage _modalPage;
         private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(30);
         private readonly RecommendationsPage _recommendationsPage;
+        private readonly RecommendationsPage _recommendationsPage;
 
         public StreamingServiceSteps(IWebDriver driver)
         {
             _driver = driver;
             _searchPage = new SearchPage(driver);
             _modalPage = new ModalPage(driver);
+            _recommendationsPage = new RecommendationsPage(driver);
             _recommendationsPage = new RecommendationsPage(driver);
         }
 
@@ -49,6 +51,7 @@ namespace MyBddProject.Tests.Steps
 
         // Modify the GivenTheUserIsOnTheSearchPage method
         [Given(@"the user is on the search page for icons test")]
+        public void GivenTheUserIsOnSearchPage()
         public void GivenTheUserIsOnSearchPage()
         {
             try 
@@ -81,6 +84,7 @@ namespace MyBddProject.Tests.Steps
 
         [Then(@"the search should show results for ""(.*)""")]
         public void ThenTheUserSearchShouldTheShowResultsFor(string expectedResult)
+        public void ThenTheUserSearchShouldTheShowResultsFor(string expectedResult)
         {
             Assert.IsTrue(_searchPage.ResultsContain(expectedResult));
         }
@@ -88,6 +92,7 @@ namespace MyBddProject.Tests.Steps
         [Given(@"the user has searched for the ""(.*)"" movie")]
         public void GivenTheUserHasSearchedFor201(string searchTerm)
         {
+            GivenTheUserIsOnSearchPage();
             GivenTheUserIsOnSearchPage();
             WhenTheUserEntersInTheSearchBar(searchTerm);
             ThenTheUserSearchShouldShowResultsFor(searchTerm);
