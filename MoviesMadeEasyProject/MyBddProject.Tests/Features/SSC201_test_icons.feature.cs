@@ -33,7 +33,7 @@ namespace MyBddProject.Tests.Features
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Show streaming service icons and links in view details", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags);
         
-#line 1 "SSC201.feature"
+#line 1 "SSC201_test_icons.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
@@ -259,6 +259,68 @@ namespace MyBddProject.Tests.Features
 #line hidden
 #line 31
     await testRunner.ThenAsync("the user should be redirected to a page with the Openai results", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Opening recommendation details")]
+        public async System.Threading.Tasks.Task OpeningRecommendationDetails()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Opening recommendation details", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 33
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 34
+    await testRunner.GivenAsync("the user is on the recommendations page with Openai results", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 35
+    await testRunner.WhenAsync("the user clicks the \"View Details\" button for the first result", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 36
+    await testRunner.ThenAsync("the user should see service icons on the modal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Checking recommendation icons")]
+        [NUnit.Framework.CategoryAttribute("testthis")]
+        public async System.Threading.Tasks.Task CheckingRecommendationIcons()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "testthis"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Checking recommendation icons", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 39
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 40
+    await testRunner.GivenAsync("the user is on the recommendations first results modal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 41
+    await testRunner.WhenAsync("the user clicks the first service icon", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 42
+    await testRunner.ThenAsync("the user should be redirected to that login page", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
