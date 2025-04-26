@@ -16,14 +16,12 @@ namespace MyBddProject.Tests.Steps
         private readonly ModalPage _modalPage;
         private readonly TimeSpan _defaultTimeout = TimeSpan.FromSeconds(30);
         private readonly RecommendationsPage _recommendationsPage;
-        private readonly RecommendationsPage _recommendationsPage;
 
         public StreamingServiceSteps(IWebDriver driver)
         {
             _driver = driver;
             _searchPage = new SearchPage(driver);
             _modalPage = new ModalPage(driver);
-            _recommendationsPage = new RecommendationsPage(driver);
             _recommendationsPage = new RecommendationsPage(driver);
         }
 
@@ -90,7 +88,6 @@ namespace MyBddProject.Tests.Steps
         [Given(@"the user has searched for the ""(.*)"" movie")]
         public void GivenTheUserHasSearchedFor201(string searchTerm)
         {
-            GivenTheUserIsOnSearchPage();
             GivenTheUserIsOnSearchPage();
             WhenTheUserEntersInTheSearchBar(searchTerm);
             ThenTheUserSearchShouldShowResultsFor(searchTerm);
