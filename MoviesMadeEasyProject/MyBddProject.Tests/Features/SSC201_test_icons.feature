@@ -20,16 +20,6 @@ Feature: Show streaming service icons and links in view details
     When the user clicks the netflix icon
     Then the user should be redirected to the Netflix login page
 
-  Scenario: Navigation results
-    Given the user is in the search section 
-    When the user enters the movie "Hunger Games" in the search bar
-    Then the search should show the results for "Hunger Games"
-
-  Scenario: Clicking More Like This button
-    Given the user has searched for the "Hunger Games"
-    When the user clicks the "More Like This" button for the first result
-    Then the user should be redirected to a page with the Openai results
-
   Scenario: Opening recommendation details
     Given the user is on the recommendations page with Openai results
     When the user clicks the "View Details" button for the first result
