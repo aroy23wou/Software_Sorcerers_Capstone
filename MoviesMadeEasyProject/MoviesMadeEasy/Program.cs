@@ -6,6 +6,7 @@ using MoviesMadeEasy.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Polly;
 
 
 
