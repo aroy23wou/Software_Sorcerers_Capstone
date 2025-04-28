@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <GenerateReqnrollCodeBehindFiles>true</GenerateReqnrollCodeBehindFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,5 +29,20 @@
     <None Update="reqnroll.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+  <None Update="Features\**\*.feature">
+    <Generator>ReqnrollSingleFileGenerator</Generator>
+    <LastGenOutput>%(Filename).feature.cs</LastGenOutput>
+  </None>
+</ItemGroup>
+
+
+  <ItemGroup>
+    <ReqnrollFeatureFiles Update="Features\SSC124_ModalRecentlyViewedTitle.feature">
+      <Generator Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">ReqnrollSingleFileGenerator</Generator>
+    </ReqnrollFeatureFiles>
   </ItemGroup>
 </Project>

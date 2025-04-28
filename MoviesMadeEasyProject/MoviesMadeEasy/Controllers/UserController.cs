@@ -4,8 +4,6 @@ using MoviesMadeEasy.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using MoviesMadeEasy.DAL.Abstract;
-using MoviesMadeEasy.Data;
-using Microsoft.AspNetCore.Mvc.Filters;
 using MoviesMadeEasy.Models.ModelView;
 
 namespace MoviesMadeEasy.Controllers
@@ -16,17 +14,21 @@ namespace MoviesMadeEasy.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserRepository _userRepository;
         private readonly ISubscriptionRepository _subscriptionService;
+        private readonly ITitleRepository _titleRepository;
 
         public UserController(
             ILogger<UserController> logger,
             UserManager<IdentityUser> userManager,
             IUserRepository userRepository,
-            ISubscriptionRepository subscriptionService) : base(userManager, userRepository, logger)
+            ISubscriptionRepository subscriptionService,
+            ITitleRepository titleRepository)
+            : base(userManager, userRepository, logger)
         {
             _logger = logger;
             _userManager = userManager;
             _userRepository = userRepository;
             _subscriptionService = subscriptionService;
+            _titleRepository = titleRepository;
         }
 
         private DashboardModelView BuildDashboardModelView(int userId)
@@ -34,6 +36,11 @@ namespace MoviesMadeEasy.Controllers
             var user = _userRepository.GetUser(userId);
             var userSubscriptions = _subscriptionService.GetUserSubscriptions(userId);
             var allServices = _subscriptionService.GetAllServices()?.ToList() ?? new List<StreamingService>();
+            var recentTitles = _titleRepository
+                      .GetRecentlyViewedByUser(userId)
+                      .OrderByDescending(tv => tv.LastUpdated)
+                      .Take(10)
+                      .ToList();
 
             return new DashboardModelView
             {
@@ -44,7 +51,8 @@ namespace MoviesMadeEasy.Controllers
                 AllServicesList = allServices,
                 PreSelectedServiceIds = userSubscriptions != null
                                         ? string.Join(",", userSubscriptions.Select(s => s.Id))
-                                        : ""
+                                        : "",
+               RecentlyViewedTitles = recentTitles
             };
         }
 
@@ -106,16 +114,29 @@ namespace MoviesMadeEasy.Controllers
             }
         }
 
+        [HttpDelete("User/RemoveRecentlyViewed/{titleId:int}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveRecentlyViewed(int titleId)
+        {
+            var identityUser = await _userManager.GetUserAsync(User);
+            if (identityUser == null) return Unauthorized();
+
+            var user = _userRepository.GetUser(identityUser.Id);   
+            _titleRepository.Delete(titleId, user.Id);
+
+            return Ok();                                           
+        }
+
         public IActionResult Cancel()
         {
             return RedirectToAction("Dashboard");
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

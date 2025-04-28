@@ -17,37 +17,66 @@ namespace MyBddProject.PageObjects
 
         public void WaitForPageToLoad()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
-            
-            // Wait for exact URL
-            wait.Until(d => d.Url.Equals(
-                "http://localhost:5000/Home/Recommendations", 
-                StringComparison.OrdinalIgnoreCase));
+            // Wait for URL to contain recommendations (more flexible than exact match)
+            _wait.Until(d => d.Url.Contains("Recommendations", StringComparison.OrdinalIgnoreCase));
 
-            // Wait for loading to complete
-            wait.Until(d => 
-                d.FindElement(By.Id("loadingSpinner")).GetCssValue("display") == "none");
+            // Wait for loading spinner to disappear
+            _wait.Until(d => 
+            {
+                try 
+                {
+                    var spinner = d.FindElement(By.Id("loadingSpinner"));
+                    return spinner == null || spinner.GetCssValue("display") == "none";
+                }
+                catch (NoSuchElementException)
+                {
+                    return true;
+                }
+            });
 
-            // Wait for content to appear
-            wait.Until(d => 
-                d.FindElements(By.CssSelector("#recommendationsContainer .list-group-item")).Count > 0 ||
-                d.FindElements(By.CssSelector(".recommendations-error")).Count > 0);
+            // Wait for at least 3 movie cards to be present and visible
+            _wait.Until(d => 
+            {
+                var cards = d.FindElements(By.CssSelector("#recommendationsContainer .movie-card"));
+                return cards.Count >= 3 && cards.All(c => c.Displayed);
+            });
         }
+
 
         public int RecommendationCount()
         {
-            return _driver.FindElements(By.CssSelector("#recommendationsContainer .list-group-item")).Count;
+            return _driver.FindElements(By.CssSelector("#recommendationsContainer .movie-card")).Count;
         }
 
         public void ClickBackToSearch()
         {
-            var backButton = _wait.Until(d => 
+            // Wait for the spinner to disappear first
+            _wait.Until(d =>
+                d.FindElement(By.Id("loadingSpinner")).GetCssValue("display") == "none");
+
+            var backButton = _wait.Until(d =>
                 d.FindElement(By.CssSelector(".back-to-search .btn-primary")));
-            backButton.Click();
-            
-            // Wait to leave recommendations page
+
+            // Scroll into view and wait until clickable
+            ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView({block: 'center'});", backButton);
+            _wait.Until(d => backButton.Displayed && backButton.Enabled);
+
+            try
+            {
+                backButton.Click();
+            }
+            catch (ElementClickInterceptedException)
+            {
+                // Try again after a brief wait if intercepted
+                Thread.Sleep(500);
+                ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].click();", backButton);
+            }
+
+            // Wait for navigation to happen
             _wait.Until(d => !d.Url.Contains("Recommendations"));
         }
+
+
 
         public bool IsRecommendationFor(string originalTitle)
         {
@@ -60,6 +89,12 @@ namespace MyBddProject.PageObjects
             {
                 return false;
             }
+        }
+
+        public void ClickViewDetails(int resultIndex = 0)
+        {
+            var buttons = _driver.FindElements(By.CssSelector(".movie-card .btn-primary"));
+            buttons[resultIndex].Click();
         }
     }
 }
